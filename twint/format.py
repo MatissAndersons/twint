@@ -1,3 +1,4 @@
+import json
 import logging as logme
 
 def Tweet(config, t):
@@ -29,7 +30,7 @@ def Tweet(config, t):
         output = output.replace("{quote_url}", t.quote_url)
         output = output.replace("{near}", t.near)
         output = output.replace("{geo}", t.geo)
-        output = output.replace("{mentions}", ",".join(t.mentions))
+        output = output.replace("{mentions}", ",".join([json.dumps(mention) for mention in t.mentions]))
         output = output.replace("{translate}", t.translate)
         output = output.replace("{trans_src}", t.trans_src)
         output = output.replace("{trans_dest}", t.trans_dest)
