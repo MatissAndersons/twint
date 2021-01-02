@@ -177,6 +177,9 @@ def init(db):
         """
         cursor.execute(table_following_names)
 
+        # cursor.execute('PRAGMA journal_mode = WAL')
+        # cursor.execute('PRAGMA synchronous = NORMAL')
+
         return conn
     except Exception as e:
         return str(e)

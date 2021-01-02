@@ -266,6 +266,11 @@ class Twint:
 
                 if get.Limit(self.config.Limit, self.count):
                     break
+
+                if self.config.Should_continue and self.config.Should_continue() == False:
+                    logme.debug(__name__ + ':Twint:main:gracefulShutdown')
+                    break  # graceful shutdown from here
+
         elif self.config.Lookup:
             await self.Lookup()
         else:
@@ -292,6 +297,9 @@ class Twint:
                 if get.Limit(self.config.Limit, self.count):
                     logme.debug(__name__ + ':Twint:main:reachedLimit')
                     break
+                if self.config.Should_continue and self.config.Should_continue() == False:
+                    logme.debug(__name__ + ':Twint:main:gracefulShutdown')
+                    break  # graceful shutdown from here
 
         if self.config.Count:
             verbose.Count(self.count, self.config)
