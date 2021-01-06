@@ -279,22 +279,26 @@ def tweets(conn, Tweet, config):
                     Tweet.translate,
                     Tweet.trans_src,
                     Tweet.trans_dest)
-        cursor.execute('INSERT INTO tweets VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', entry)
 
-        if config.Favorites:
-            query = 'INSERT INTO favorites VALUES(?,?)'
-            cursor.execute(query, (config.User_id, Tweet.id))
+        try:
+            cursor.execute('INSERT INTO tweets VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', entry)
 
-        if Tweet.retweet:
-            query = 'INSERT INTO retweets VALUES(?,?,?,?,?)'
-            _d = datetime.timestamp(datetime.strptime(Tweet.retweet_date, "%Y-%m-%d %H:%M:%S"))
-            cursor.execute(query, (int(Tweet.user_rt_id), Tweet.user_rt, Tweet.id, int(Tweet.retweet_id), _d))
+            if config.Favorites:
+                query = 'INSERT INTO favorites VALUES(?,?)'
+                cursor.execute(query, (config.User_id, Tweet.id))
 
-        if Tweet.reply_to:
-            for reply in Tweet.reply_to:
-                query = 'INSERT INTO replies VALUES(?,?,?)'
-                cursor.execute(query, (Tweet.id, reply['screen_name'], reply['name']))
+            if Tweet.retweet:
+                query = 'INSERT INTO retweets VALUES(?,?,?,?,?)'
+                _d = datetime.timestamp(datetime.strptime(Tweet.retweet_date, "%Y-%m-%d %H:%M:%S"))
+                cursor.execute(query, (int(Tweet.user_rt_id), Tweet.user_rt, Tweet.id, int(Tweet.retweet_id), _d))
 
-        conn.commit()
+            if Tweet.reply_to:
+                for reply in Tweet.reply_to:
+                    query = 'INSERT INTO replies VALUES(?,?,?)'
+                    cursor.execute(query, (Tweet.id, reply['screen_name'], reply['name']))
+
+            conn.commit()
+        except:
+            print('error...')
     except sqlite3.IntegrityError:
         pass
