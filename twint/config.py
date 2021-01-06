@@ -84,4 +84,6 @@ class Config:
     Min_wait_time: int = 0
     Bearer_token: str = None
     Guest_token: str = None
+    Token_proxy: str = None
+    custom_gt = None
     deleted: list = None
