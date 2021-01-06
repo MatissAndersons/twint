@@ -25,12 +25,19 @@ class Token:
         self.url = 'https://twitter.com'
 
     def _request(self):
+        proxies = {}
+        if self.config.Token_proxy == 'tor':
+            proxies = {
+                'http': 'socks5://localhost:9050',
+                'https': 'socks5://localhost:9050'
+            }
+
         for attempt in range(self._retries + 1):
             # The request is newly prepared on each retry because of potential cookie updates.
             req = self._session.prepare_request(requests.Request('GET', self.url))
             logme.debug(f'Retrieving {req.url}')
             try:
-                r = self._session.send(req, allow_redirects=True, timeout=self._timeout)
+                r = self._session.send(req, allow_redirects=True, timeout=self._timeout, proxies=proxies)
             except requests.exceptions.RequestException as exc:
                 if attempt < self._retries:
                     retrying = ', retrying'
